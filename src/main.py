@@ -5,7 +5,9 @@ import os
 import httpx
 from colorama import Fore, Style
 from dotenv import load_dotenv
+
 from src.logger import get_logger
+
 from .blocklist_manager import BlocklistManager
 from .debouncer import Debouncer
 
@@ -51,7 +53,8 @@ def listen_to_sse(domains: list[str], manager: BlocklistManager) -> None:
                         query_type = data.get("queryType")
                         if domain:
                             logger.info(
-                                f"Event received for {query_type} domain: {Fore.MAGENTA}{domain}{Style.RESET_ALL}"
+                                f"Event received for {query_type} domain: "
+                                f"{Fore.MAGENTA}{domain}{Style.RESET_ALL}"
                             )
                             debouncer.add(domain)
                         else:
@@ -82,7 +85,8 @@ def main() -> None:
     manager = BlocklistManager(API_KEY, BASE_URL)
     blocklist = manager.load_local()
     logger.info(
-        f"Loaded {len(blocklist)} hostnames from {Style.BRIGHT}{Fore.CYAN}blocklist.txt{Style.RESET_ALL}."
+        f"Loaded {len(blocklist)} hostnames from {Style.BRIGHT}{Fore.CYAN}"
+        f"blocklist.txt{Style.RESET_ALL}."
     )
 
     if manager.prime(blocklist):
