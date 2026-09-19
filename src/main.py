@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import time
 
 import httpx
 from colorama import Fore, Style
@@ -37,36 +38,44 @@ def listen_to_sse(domains: list[str], manager: BlocklistManager) -> None:
 
     logger.info(f"Connecting to {Fore.BLUE}{sse_url}{Style.RESET_ALL}...")
 
-    try:
-        with httpx.stream("GET", sse_url, headers=headers, timeout=None) as response:
-            if response.status_code != 200:
-                error_msg = response.read().decode("utf-8")
-                logger.error(f"Failed to connect: {response.status_code} - {error_msg}")
-                return
+    while True:
+        try:
+            with httpx.stream("GET", sse_url, headers=headers, timeout=None) as response:
+                if response.status_code != 200:
+                    error_msg = response.read().decode("utf-8")
+                    logger.error(f"Failed to connect: {response.status_code} - {error_msg}")
+                    return
 
-            logger.info("Connected. Listening for events...")
-            for line in response.iter_lines():
-                if line.startswith("data:"):
-                    try:
-                        data: dict = json.loads(line[len("data:") :].strip())
-                        domain = data.get("domain")
-                        query_type = data.get("queryType")
-                        if domain:
-                            logger.info(
-                                f"Event received for {query_type} domain: "
-                                f"{Fore.MAGENTA}{domain}{Style.RESET_ALL}"
-                            )
-                            debouncer.add(domain)
-                        else:
-                            logger.warning(f"Received event without domain: {data}")
-                    except json.JSONDecodeError:
-                        logger.debug(f"Received non-JSON data: {line}")
-                elif line.strip() == "":
-                    continue
-    except KeyboardInterrupt:
-        logger.warning("Stopping...")
-        debouncer.flush()
-        manager.fetch_and_save()
+                logger.info("Connected. Listening for events...")
+                for line in response.iter_lines():
+                    if line.startswith("data:"):
+                        try:
+                            data: dict = json.loads(line[len("data:") :].strip())
+                            domain = data.get("domain")
+                            query_type = data.get("queryType")
+                            if domain:
+                                logger.info(
+                                    f"Event received for {query_type} domain: "
+                                    f"{Fore.MAGENTA}{domain}{Style.RESET_ALL}"
+                                )
+                                debouncer.add(domain)
+                            else:
+                                logger.warning(f"Received event without domain: {data}")
+                        except json.JSONDecodeError:
+                            logger.debug(f"Received non-JSON data: {line}")
+                    elif line.strip() == "":
+                        continue
+        except (httpx.RemoteProtocolError, httpx.ReadError, httpx.ConnectError) as e:
+            logger.warning(f"Connection lost ({e}). Retrying in 5 seconds...")
+            time.sleep(5)
+        except KeyboardInterrupt:
+            logger.warning("Stopping...")
+            debouncer.flush()
+            manager.fetch_and_save()
+            break
+        except Exception as e:
+            logger.error(f"Unexpected error: {e}")
+            break
 
 
 def main() -> None:
