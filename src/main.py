@@ -40,10 +40,14 @@ def listen_to_sse(domains: list[str], manager: BlocklistManager) -> None:
 
     while True:
         try:
-            with httpx.stream("GET", sse_url, headers=headers, timeout=None) as response:
+            with httpx.stream(
+                "GET", sse_url, headers=headers, timeout=None
+            ) as response:
                 if response.status_code != 200:
                     error_msg = response.read().decode("utf-8")
-                    logger.error(f"Failed to connect: {response.status_code} - {error_msg}")
+                    logger.error(
+                        f"Failed to connect: {response.status_code} - {error_msg}"
+                    )
                     return
 
                 logger.info("Connected. Listening for events...")
