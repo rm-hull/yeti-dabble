@@ -1,18 +1,19 @@
-import json
-import time
 import threading
-from typing import Set, Callable
+from collections.abc import Callable
+from typing import Any
 
 
 class Debouncer:
-    def __init__(self, interval_seconds: float, callback: Callable[[Set[str]], None]):
+    def __init__(
+        self, interval_seconds: float, callback: Callable[[set[str]], Any]
+    ):
         self.interval = interval_seconds
         self.callback = callback
-        self.collected_domains: Set[str] = set()
+        self.collected_domains: set[str] = set()
         self.timer: threading.Timer | None = None
         self.lock = threading.Lock()
 
-    def add(self, domain: str):
+    def add(self, domain: str) -> None:
         with self.lock:
             self.collected_domains.add(domain)
             if self.timer:
@@ -20,7 +21,7 @@ class Debouncer:
             self.timer = threading.Timer(self.interval, self._trigger)
             self.timer.start()
 
-    def _trigger(self):
+    def _trigger(self) -> None:
         with self.lock:
             domains_to_process = self.collected_domains.copy()
             self.collected_domains.clear()
@@ -29,7 +30,7 @@ class Debouncer:
         if domains_to_process:
             self.callback(domains_to_process)
 
-    def flush(self):
+    def flush(self) -> None:
         with self.lock:
             if self.timer:
                 self.timer.cancel()

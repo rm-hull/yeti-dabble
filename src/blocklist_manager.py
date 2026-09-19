@@ -1,8 +1,9 @@
-import httpx
-import time
 import os
-from typing import Set
+import time
+
+import httpx
 from colorama import Fore, Style
+
 from src.logger import get_logger
 
 logger = get_logger(__name__)
@@ -13,9 +14,9 @@ class BlocklistManager:
     def __init__(self, api_key: str, base_url: str):
         self.api_key = api_key
         self.base_url = base_url.rstrip("/")
-        self.shadow_blocklist: Set[str] = set()
+        self.shadow_blocklist: set[str] = set()
 
-    def prime(self, blocklist: Set[str]) -> bool:
+    def prime(self, blocklist: set[str]) -> bool:
         new_domains = [d for d in blocklist if d not in self.shadow_blocklist]
         if not new_domains:
             logger.info("No new domains to prime.")
@@ -26,7 +27,8 @@ class BlocklistManager:
         payload = {"domains": new_domains}
 
         logger.info(
-            f"Priming blocklist at {Fore.BLUE}{url}{Style.RESET_ALL} with {len(new_domains)} new domains..."
+            f"Priming blocklist at {Fore.BLUE}{url}{Style.RESET_ALL} "
+            f"with {len(new_domains)} new domains..."
         )
 
         try:
@@ -36,23 +38,25 @@ class BlocklistManager:
                 return True
             else:
                 logger.error(
-                    f"Failed to prime blocklist: {response.status_code} - {response.text}"
+                    f"Failed to prime blocklist: {response.status_code} - "
+                    f"{response.text}"
                 )
                 return False
         except Exception as e:
             logger.error(f"Error connecting to API: {e}")
             return False
 
-    def load_local(self, filepath: str = "blocklist.txt") -> Set[str]:
+    def load_local(self, filepath: str = "blocklist.txt") -> set[str]:
         """Reads hostnames from blocklist.txt, ignoring comments and empty lines."""
         if not os.path.exists(filepath):
             logger.warning(
-                f"Error: {Style.BRIGHT}{Fore.CYAN}{filepath}{Style.RESET_ALL} not found."
+                f"Error: {Style.BRIGHT}{Fore.CYAN}{filepath}{Style.RESET_ALL} "
+                "not found."
             )
             return set()
 
         with open(filepath) as f:
-            hostnames: Set[str] = set()
+            hostnames: set[str] = set()
             for line in f:
                 line = line.strip()
                 if not line or line.startswith("#"):
@@ -74,7 +78,8 @@ class BlocklistManager:
                 with open(filepath, "w") as f:
                     f.write("# Title: yeti-dabble custom blocklist\n")
                     f.write(
-                        "# Description: dynamically curated blocklist, maintained at github.com/rm-hull/yeti-dabble\n"
+                        "# Description: dynamically curated blocklist, "
+                        "maintained at github.com/rm-hull/yeti-dabble\n"
                     )
                     f.write(
                         "# Last modified: "
@@ -82,17 +87,20 @@ class BlocklistManager:
                         + "\n"
                     )
                     f.write(
-                        "# Notes: raise an issue/create a PR to add/remove entries from this blocklist\n"
+                        "# Notes: raise an issue/create a PR to add/remove entries "
+                        "from this blocklist\n"
                     )
                     f.write("#\n")
                     for domain in sorted_domains:
                         f.write(f"{domain}\n")
                 logger.info(
-                    f"Successfully updated {Style.BRIGHT}{Fore.CYAN}{filepath}{Style.RESET_ALL} with {len(domains)} domains."
+                    f"Successfully updated {Style.BRIGHT}{Fore.CYAN}{filepath}"
+                    f"{Style.RESET_ALL} with {len(domains)} domains."
                 )
             else:
                 logger.error(
-                    f"Failed to fetch blocklist: {response.status_code} - {response.text}"
+                    f"Failed to fetch blocklist: {response.status_code} - "
+                    f"{response.text}"
                 )
         except Exception as e:
             logger.error(f"Error fetching/writing blocklist: {e}")
