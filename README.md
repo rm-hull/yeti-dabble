@@ -40,11 +40,13 @@ This will automatically create a virtual environment, install the dependencies, 
 
 - **Linting & Formatting**: `ruff`
 - **Type Checking**: `mypy`
+- **Testing**: `pytest`
 
-To run checks using `uv`:
+To run checks and tests using `uv`:
 
 ```bash
-uv run ruff check src/
-uv run ruff format src/
-uv run mypy src/
+uv run ruff check src/ tests/
+uv run ruff format --check src/ tests/
+uv run mypy src/ tests/
+uv run pytest
 ```

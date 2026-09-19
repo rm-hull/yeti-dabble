@@ -9,7 +9,6 @@ from src.logger import get_logger
 logger = get_logger(__name__)
 
 
-
 class BlocklistManager:
     def __init__(self, api_key: str, base_url: str):
         self.api_key = api_key
@@ -71,9 +70,11 @@ class BlocklistManager:
         try:
             response = httpx.get(url, headers=headers)
             if response.status_code == 200:
-                domains = response.json().get("domains", [])
-                self.shadow_blocklist = set(domains)
-                sorted_domains = sorted(domains)
+                fetched_domains = response.json().get("domains", [])
+                local_domains = self.load_local(filepath)
+                merged_domains = sorted(list(set(fetched_domains) | local_domains))
+
+                self.shadow_blocklist = set(merged_domains)
 
                 with open(filepath, "w") as f:
                     f.write("# Title: yeti-dabble custom blocklist\n")
@@ -91,11 +92,12 @@ class BlocklistManager:
                         "from this blocklist\n"
                     )
                     f.write("#\n")
-                    for domain in sorted_domains:
+                    for domain in merged_domains:
                         f.write(f"{domain}\n")
                 logger.info(
                     f"Successfully updated {Style.BRIGHT}{Fore.CYAN}{filepath}"
-                    f"{Style.RESET_ALL} with {len(domains)} domains."
+                    f"{Style.RESET_ALL} with {len(merged_domains)} domains "
+                    f"({len(fetched_domains)} fetched, {len(local_domains)} local)."
                 )
             else:
                 logger.error(

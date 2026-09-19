@@ -14,6 +14,8 @@ yeti-dabble = "src.main:main"
 [project.optional-dependencies]
 dev = [
     "mypy",
+    "pytest",
+    "pytest-httpx",
     "ruff",
 ]
 

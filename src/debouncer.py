@@ -4,9 +4,7 @@ from typing import Any
 
 
 class Debouncer:
-    def __init__(
-        self, interval_seconds: float, callback: Callable[[set[str]], Any]
-    ):
+    def __init__(self, interval_seconds: float, callback: Callable[[set[str]], Any]):
         self.interval = interval_seconds
         self.callback = callback
         self.collected_domains: set[str] = set()
