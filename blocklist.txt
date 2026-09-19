@@ -1,0 +1,33 @@
+# Title: yeti-dabble custom blocklist
+# Description: dynamically curated blocklist, maintained at github.com/rm-hull/yeti-dabble
+# Last modified: 19 Sep 2026 22:44 UTC
+# Notes: raise an issue/create a PR to add/remove entries from this blocklist
+#
+5045dd10-2883-4147-9b4d-0ddaae855284-panelresearch.googlevideo.com
+rr1---sn-8pgbpohxqp5-ac56.googlevideo.com
+rr1---sn-8pgbpohxqp5-ac5d.googlevideo.com
+rr1---sn-aigl6nzl.googlevideo.com
+rr1---sn-aigzrn7k.googlevideo.com
+rr2---sn-2oaig5-5f.googlevideo.com
+rr2---sn-8pgbpohxqp5-ac56.googlevideo.com
+rr2---sn-8pgbpohxqp5-ac5d.googlevideo.com
+rr2---sn-8pgbpohxqp5-ac5e7.googlevideo.com
+rr2---sn-8pgbpohxqp5-ac5el.googlevideo.com
+rr2---sn-aigl6ned.googlevideo.com
+rr2---sn-aigzrnsz.googlevideo.com
+rr3---sn-8pgbpohxqp5-ac56.googlevideo.com
+rr3---sn-8pgbpohxqp5-ac5d.googlevideo.com
+rr3---sn-8pgbpohxqp5-ac5e7.googlevideo.com
+rr3---sn-8pgbpohxqp5-ac5el.googlevideo.com
+rr4---sn-8pgbpohxqp5-ac5d.googlevideo.com
+rr4---sn-8pgbpohxqp5-ac5el.googlevideo.com
+rr4---sn-aigl6ner.googlevideo.com
+rr4---sn-ajaig5-5g.googlevideo.com
+rr4---sn-ajaig5-5o.googlevideo.com
+rr4---sn-ajaig5-c5.googlevideo.com
+rr5---sn-8pgbpohxqp5-ac5d.googlevideo.com
+rr5---sn-aigl6ned.googlevideo.com
+rr5---sn-aigzrnss.googlevideo.com
+rr6---sn-8pgbpohxqp5-ac56.googlevideo.com
+rr7---sn-8pgbpohxqp5-ac56.googlevideo.com
+rr8---sn-8pgbpohxqp5-ac56.googlevideo.com
